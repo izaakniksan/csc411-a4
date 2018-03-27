@@ -1,0 +1,259 @@
+% This document is based on a template created by Ted Pavlic (http://www.tedpavlic.com)
+
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\documentclass{article}
+
+\usepackage{fancyhdr} % Required for custom headers
+\usepackage{lastpage} % Required to determine the last page for the footer
+\usepackage{extramarks} % Required for headers and footers
+\usepackage[usenames,dvipsnames]{color} % Required for custom colors
+\usepackage{graphicx} % Required to insert images
+\usepackage{subcaption}
+\usepackage{listings} % Required for insertion of code
+\usepackage{courier} % Required for the courier font
+%\usepackage{lipsum} % Used for inserting dummy 'Lorem ipsum' text into the template
+\usepackage{amsmath,siunitx,physics,amssymb}
+\usepackage{placeins}
+\usepackage{enumitem}
+\usepackage{hyperref,cleveref}
+
+% Margins
+\topmargin=-0.45in
+\evensidemargin=0in
+\oddsidemargin=0in
+\textwidth=6.5in
+\textheight=9.0in
+\headsep=0.25in
+
+\linespread{1.1} % Line spacing
+
+% Set up the header and footer
+\pagestyle{fancy}
+\lhead{\hmwkAuthorName} % Top left header
+\chead{\hmwkClass\ : \hmwkTitle} % Top center head
+%\rhead{\firstxmark} % Top right header
+\lfoot{\lastxmark} % Bottom left footer
+\cfoot{} % Bottom center footer
+\rfoot{Page\ \thepage\ of\ \protect\pageref{LastPage}} % Bottom right footer
+\renewcommand\headrulewidth{0.4pt} % Size of the header rule
+\renewcommand\footrulewidth{0.4pt} % Size of the footer rule
+
+%\setlength\parindent{0pt} % Removes all indentation from paragraphs
+
+%----------------------------------------------------------------------------------------
+%	DOCUMENT STRUCTURE COMMANDS
+%	Skip this unless you know what you're doing
+%----------------------------------------------------------------------------------------
+
+% Header and footer for when a page split occurs within a problem environment
+\newcommand{\enterproblemHeader}[1]{
+%\nobreak\extramarks{#1}{#1 continued on next page\ldots}\nobreak
+%\nobreak\extramarks{#1 (continued)}{#1 continued on next page\ldots}\nobreak
+}
+
+% Header and footer for when a page split occurs between problem environments
+\newcommand{\exitproblemHeader}[1]{
+%\nobreak\extramarks{#1 (continued)}{#1 continued on next page\ldots}\nobreak
+%\nobreak\extramarks{#1}{}\nobreak
+}
+
+\setcounter{secnumdepth}{0} % Removes default section numbers
+\newcounter{problem} % Creates a counter to keep track of the number of problems
+\setcounter{problem}{-1}
+
+\newcommand{\problemName}{}
+\newenvironment{problem}[1][Part \theproblem]{ % Makes a new environment called problem which takes 1 argument (custom name) but the default is "problem #"
+	\stepcounter{problem} % Increase counter for number of problems
+	\renewcommand{\problemName}{#1} % Assign \problemName the name of the problem
+	\section{\problemName} % Make a section in the document with the custom problem count
+	\enterproblemHeader{\problemName} % Header and footer within the environment
+}{
+	\exitproblemHeader{\problemName} % Header and footer after the environment
+}
+
+\newcommand{\problemAnswer}[1]{ % Defines the problem answer command with the content as the only argument
+	\noindent\framebox[\columnwidth][c]{\begin{minipage}{0.98\columnwidth}#1\end{minipage}} % Makes the box around the problem answer and puts the content inside
+}
+
+\newcounter{subproblem}[problem]
+\newcommand{\subproblemName}{}
+\newenvironment{subproblem}[1][\theproblem~(\alph{subproblem})]{ % New environment for sections within  problems, takes 1 argument - the name of the section
+	\stepcounter{subproblem}
+	\renewcommand{\subproblemName}{#1} % Assign \problemName the name of the problem
+	\subsection{\subproblemName} % Make a section in the document with the custom problem count
+	\enterproblemHeader{\subproblemName} % Header and footer within the environment
+}{
+	\enterproblemHeader{\problemName} % Header and footer after the environment
+}
+
+\newcommand{\numberthis}{\addtocounter{equation}{1}\tag{\theequation}}
+
+%----------------------------------------------------------------------------------------
+%	NAME AND CLASS SECTION
+%----------------------------------------------------------------------------------------
+
+\newcommand{\hmwkTitle}{Assignment\ \#$4$} % Assignment title
+\newcommand{\hmwkDueDate}{Moday,\ April\ 2,\ 2018} % Due date
+\newcommand{\hmwkClass}{CSC411} % Course/class
+\newcommand{\hmwkClassTime}{} % Class/lecture time
+\newcommand{\hmwkAuthorName}{Izaak Niksan and Lukas Zhornyak} % Your name
+
+%----------------------------------------------------------------------------------------
+%	TITLE PAGE
+%----------------------------------------------------------------------------------------
+
+\title{
+	\vspace{2in}
+	\textmd{\textbf{\hmwkClass:\ \hmwkTitle}}\\
+	\normalsize\vspace{0.1in}\small{Due\ on\ \hmwkDueDate}\\
+	\vspace{0.1in}
+	\vspace{3in}
+}
+
+\author{\textbf{\hmwkAuthorName}}
+%\date{} % Insert date here if you want it to appear below your name
+
+%----------------------------------------------------------------------------------------
+
+\begin{document}
+
+\maketitle
+\clearpage
+
+%----------------------------------------------------------------------------------------
+%	ENVIRONMENT
+%----------------------------------------------------------------------------------------
+
+\begin{problem}[Environment]	
+	This project was created with Python 3.6.4 with numpy 1.14.1, scipy 1.0.0, scikit-image 0.13.1, and matplotlib 2.1.2, pytorch 0.3.0, torchvision 0.2.0, as well as all associated dependencies.
+\end{problem}
+\clearpage
+
+%----------------------------------------------------------------------------------------
+%	PART 1
+%----------------------------------------------------------------------------------------
+\FloatBarrier
+\begin{problem}
+	
+	
+\end{problem}
+\clearpage
+
+%----------------------------------------------------------------------------------------
+%	PART 2
+%----------------------------------------------------------------------------------------
+\FloatBarrier
+\begin{problem}
+	
+	\begin{subproblem}
+		
+	\end{subproblem}
+	
+	\begin{subproblem}
+		
+	\end{subproblem}
+	
+	\begin{subproblem}
+		
+	\end{subproblem}
+	
+\end{problem}
+\clearpage
+
+%----------------------------------------------------------------------------------------
+%	PART 3
+%----------------------------------------------------------------------------------------
+\FloatBarrier
+\begin{problem}
+	
+	\begin{subproblem}
+		
+	\end{subproblem}
+	
+	\begin{subproblem}
+		
+	\end{subproblem}
+	
+\end{problem}
+\clearpage
+
+%----------------------------------------------------------------------------------------
+%	PART 4
+%----------------------------------------------------------------------------------------
+\FloatBarrier
+\begin{problem}
+	
+	\begin{subproblem}
+		
+	\end{subproblem}
+	
+	\begin{subproblem}
+		
+	\end{subproblem}
+	
+\end{problem}
+\clearpage
+
+%----------------------------------------------------------------------------------------
+%	PART 5
+%----------------------------------------------------------------------------------------
+\FloatBarrier
+\begin{problem}
+	
+	\begin{subproblem}
+		
+	\end{subproblem}
+	
+	\begin{subproblem}
+		
+	\end{subproblem}
+	
+	\begin{subproblem}
+		
+	\end{subproblem}
+	
+	\begin{subproblem}
+		
+	\end{subproblem}
+	
+\end{problem}
+\clearpage
+
+%----------------------------------------------------------------------------------------
+%	PART 6
+%----------------------------------------------------------------------------------------
+\FloatBarrier
+\begin{problem}
+	
+	
+\end{problem}
+\clearpage
+
+%----------------------------------------------------------------------------------------
+%	PART 7
+%----------------------------------------------------------------------------------------
+\FloatBarrier
+\begin{problem}
+	
+	
+\end{problem}
+\clearpage
+
+%----------------------------------------------------------------------------------------
+%	PART 8
+%----------------------------------------------------------------------------------------
+\FloatBarrier
+\begin{problem}
+	
+	
+\end{problem}
+\clearpage
+
+
+%----------------------------------------------------------------------------------------
+
+\end{document}
