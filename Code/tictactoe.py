@@ -223,7 +223,7 @@ if __name__ == '__main__':
     import part1
     print('Running part1.py...')
     part1.main()
-    print('...part1.py finished')
+    print('...part1.py finished\n')
     
     import sys
     policy = Policy()

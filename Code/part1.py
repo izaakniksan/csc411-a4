@@ -2,7 +2,7 @@ import tictactoe
 
 def main():
 
-    p1_env=Environment()
+    p1_env=tictactoe.Environment()
     print('First turns:')
     p1_env.step(0)
     p1_env.step(1)
