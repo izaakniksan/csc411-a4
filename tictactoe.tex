@@ -138,6 +138,40 @@
 %----------------------------------------------------------------------------------------
 \FloatBarrier
 \begin{problem}
+By inspecting the code it was determined that the grid is represented by a numpy array of 9 elements, one for each space on the board. The parameter \textit{turn} represents whose turn it is, taking on values of 1 or 2 (for x and o respectively). The parameter \textit{done} is a Boolean value denoting whether or not the game is finished.\\\\
+A game of Tic-Tac-Toe (albeit an amateur one) was simulated using the code seen in Listing 1. Its text output is seen below it.
+\begin{lstlisting}[language=Python, caption=Simulated game of Tic-Tac-Toe]
+p1_env=Environment()
+print('First turns:')
+p1_env.step(0)
+p1_env.step(1)
+p1_env.render()
+print('Second turns:')
+p1_env.step(8)
+p1_env.step(5)
+p1_env.render()
+print('Third turn (x wins):')
+p1_env.step(4)
+p1_env.render()
+
+...
+
+First turns:
+xo.
+...
+...
+====
+Second turns:
+xo.
+..o
+..x
+====
+Third turn (x wins):
+xo.
+.xo
+..x
+====
+\end{lstlisting}
 	
 	
 \end{problem}
@@ -154,11 +188,16 @@
 	\end{subproblem}
 	
 	\begin{subproblem}
-		
+By inspecting the 27-dimensional vector
+
+
+\\\\\\\\\\\\\\\\\\\
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	\end{subproblem}
 	
 	\begin{subproblem}
-		
+The output of this policy is a 9-dimensional vector, in the same format as \textit{grid} described in Part 1, with each value representing the probability of that spot being chosen this turn. In other words, it represents a discrete probability distribution. Since \textit{select\_action} takes a sample from this distribution, and does not always choose the element of highest probability, the policy is therefore stochastic.
 	\end{subproblem}
 	
 \end{problem}
