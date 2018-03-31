@@ -1,24 +1,22 @@
-from __future__ import print_function
-from collections import defaultdict
-from itertools import count
-import numpy as np
-import math
 import random
+from itertools import count, accumulate
+
+import numpy as np
 import torch
-import torch.nn as nn
-import torch.nn.functional as F
-import torch.optim as optim
 import torch.distributions
+import torch.nn as nn
+import torch.optim as optim
 from torch.autograd import Variable
+
 
 class Environment(object):
     """
     The Tic-Tac-Toe Environment
     """
     # possible ways to win
-    win_set = frozenset([(0,1,2), (3,4,5), (6,7,8), # horizontal
-                         (0,3,6), (1,4,7), (2,5,8), # vertical
-                         (0,4,8), (2,4,6)])         # diagonal
+    win_set = frozenset([(0, 1, 2), (3, 4, 5), (6, 7, 8),  # horizontal
+                         (0, 3, 6), (1, 4, 7), (2, 5, 8),  # vertical
+                         (0, 4, 8), (2, 4, 6)])  # diagonal
     # statuses
     STATUS_VALID_MOVE = 'valid'
     STATUS_INVALID_MOVE = 'inv'
@@ -32,14 +30,14 @@ class Environment(object):
 
     def reset(self):
         """Reset the game to an empty board."""
-        self.grid = np.array([0] * 9) # grid
-        self.turn = 1                 # whose turn it is
-        self.done = False             # whether game is done
+        self.grid = np.array([0] * 9)  # grid
+        self.turn = 1  # whose turn it is
+        self.done = False  # whether game is done
         return self.grid
 
     def render(self):
         """Print what is on the board."""
-        map = {0:'.', 1:'x', 2:'o'} # grid label vs how to plot
+        map = {0: '.', 1: 'x', 2: 'o'}  # grid label vs how to plot
         print(''.join(map[i] for i in self.grid[0:3]))
         print(''.join(map[i] for i in self.grid[3:6]))
         print(''.join(map[i] for i in self.grid[6:9]))
@@ -98,26 +96,35 @@ class Environment(object):
                     raise ValueError("???")
         return state, status, done
 
+
 class Policy(nn.Module):
     """
     The Tic-Tac-Toe Policy
     """
+
     def __init__(self, input_size=27, hidden_size=64, output_size=9):
         super(Policy, self).__init__()
-        # TODO
+        self.policy = nn.Sequential(
+            nn.Linear(input_size, hidden_size),
+            nn.ReLU(),
+            nn.Linear(hidden_size, output_size),
+            nn.Softmax(1)
+        )
 
     def forward(self, x):
-        # TODO
+        return self.policy.forward(x)
+
 
 def select_action(policy, state):
     """Samples an action from the policy at the state."""
     state = torch.from_numpy(state).long().unsqueeze(0)
-    state = torch.zeros(3,9).scatter_(0,state,1).view(1,27)
+    state = torch.zeros(3, 9).scatter_(0, state, 1).view(1, 27)
     pr = policy(Variable(state))
     m = torch.distributions.Categorical(pr)
     action = m.sample()
     log_prob = torch.sum(m.log_prob(action))
     return action.data[0], log_prob
+
 
 def compute_returns(rewards, gamma=1.0):
     """
@@ -128,16 +135,18 @@ def compute_returns(rewards, gamma=1.0):
       @returns list of floats representing the episode's returns
           G_t = r_t + \gamma r_{t+1} + \gamma^2 r_{t+2} + ... 
 
-    >>> compute_returns([0,0,0,1], 1.0)
-    [1.0, 1.0, 1.0, 1.0]
-    >>> compute_returns([0,0,0,1], 0.9)
-    [0.7290000000000001, 0.81, 0.9, 1.0]
-    >>> compute_returns([0,-0.5,5,0.5,-10], 0.9)
-    [-2.5965000000000003, -2.8850000000000002, -2.6500000000000004, -8.5, -10.0]
-    """
-    # TODO
+    # >>> compute_returns([0,0,0,1], 1.0)
+    # [1.0, 1.0, 1.0, 1.0]
+    # >>> compute_returns([0,0,0,1], 0.9)
+    # [0.7290000000000001, 0.81, 0.9, 1.0]
+    # >>> compute_returns([0,-0.5,5,0.5,-10], 0.9)
+    # [-2.5965000000000003, -2.8850000000000002, -2.6500000000000004, -8.5, -10.0]
+    # """
+    v = list(accumulate([r * gamma ** i for i, r in enumerate(rewards)][::-1]))
+    return [r / gamma ** i for i, r in enumerate(v[::-1])]
 
-def finish_episode(saved_rewards, saved_logprobs, gamma=1.0):
+
+def finish_episode(saved_rewards, saved_logprobs, gamma=1):
     """Samples an action from the policy at the state."""
     policy_loss = []
     returns = compute_returns(saved_rewards, gamma)
@@ -152,24 +161,27 @@ def finish_episode(saved_rewards, saved_logprobs, gamma=1.0):
     # note: retain_graph=True allows for multiple calls to .backward()
     # in a single step
 
+
 def get_reward(status):
     """Returns a numeric given an environment status."""
     return {
-            Environment.STATUS_VALID_MOVE  : 0, # TODO
-            Environment.STATUS_INVALID_MOVE: 0,
-            Environment.STATUS_WIN         : 0,
-            Environment.STATUS_TIE         : 0,
-            Environment.STATUS_LOSE        : 0
+        Environment.STATUS_VALID_MOVE: 0,
+        Environment.STATUS_INVALID_MOVE: -1,
+        Environment.STATUS_WIN: 1,
+        Environment.STATUS_TIE: 0,
+        Environment.STATUS_LOSE: -1
     }[status]
+
 
 def train(policy, env, gamma=1.0, log_interval=1000):
     """Train policy gradient."""
     optimizer = optim.Adam(policy.parameters(), lr=0.001)
     scheduler = torch.optim.lr_scheduler.StepLR(
-            optimizer, step_size=10000, gamma=0.9)
+        optimizer, step_size=10000, gamma=0.9)
     running_reward = 0
+    avg_rewards = []
 
-    for i_episode in count(1):
+    for i_episode in range(1, 50001):
         saved_rewards = []
         saved_logprobs = []
         state = env.reset()
@@ -190,35 +202,38 @@ def train(policy, env, gamma=1.0, log_interval=1000):
             print('Episode {}\tAverage return: {:.2f}'.format(
                 i_episode,
                 running_reward / log_interval))
+            avg_rewards.append(running_reward / log_interval)
             running_reward = 0
 
         if i_episode % (log_interval) == 0:
             torch.save(policy.state_dict(),
-                       "ttt/policy-%d.pkl" % i_episode)
+                       "ttt/policy-{}.pkl".format(i_episode))
 
-        if i_episode % 1 == 0: # batch_size
+        if i_episode % 1 == 0:  # batch_size
             optimizer.step()
             scheduler.step()
             optimizer.zero_grad()
+    return avg_rewards
 
 
 def first_move_distr(policy, env):
     """Display the distribution of first moves."""
     state = env.reset()
     state = torch.from_numpy(state).long().unsqueeze(0)
-    state = torch.zeros(3,9).scatter_(0,state,1).view(1,27)
+    state = torch.zeros(3, 9).scatter_(0, state, 1).view(1, 27)
     pr = policy(Variable(state))
     return pr.data
 
 
 def load_weights(policy, episode):
     """Load saved weights"""
-    weights = torch.load("ttt/policy-%d.pkl" % episode)
+    weights = torch.load("ttt/policy-{}.pkl".format(episode))
     policy.load_state_dict(weights)
 
 
 if __name__ == '__main__':
     import sys
+
     policy = Policy()
     env = Environment()
 

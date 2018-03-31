@@ -19,6 +19,7 @@
 \usepackage{amsmath,siunitx,physics,amssymb}
 \usepackage{placeins}
 \usepackage{enumitem}
+\usepackage{minted,listings}
 \usepackage{hyperref,cleveref}
 
 % Margins
@@ -138,42 +139,44 @@
 %----------------------------------------------------------------------------------------
 \FloatBarrier
 \begin{problem}
-By inspecting the code it was determined that the grid is represented by a numpy array of 9 elements, one for each space on the board; 0 represents an empty space, 1 represents the presence of an x in the space, and 2 represents the presence of an o in the space. The parameter \textit{turn} represents whose turn it is, taking on values of 1 or 2 (for x and o respectively). The parameter \textit{done} is a Boolean value denoting whether or not the game is finished.\\\\
-A game of Tic-Tac-Toe (albeit an amateur one) was simulated using the code seen in Listing \ref{simulated game}. Its text output is seen below it.
-
-\begin{lstlisting}[language=Python, caption=Simulated game of Tic-Tac-Toe, label=simulated game] 
-p1_env=Environment()
-print('First turns:')
-p1_env.step(0)
-p1_env.step(1)
-p1_env.render()
-print('Second turns:')
-p1_env.step(8)
-p1_env.step(5)
-p1_env.render()
-print('Third turn (x wins):')
-p1_env.step(4)
-p1_env.render()
-
-...
-
-First turns:
-xo.
-...
-...
-====
-Second turns:
-xo.
-..o
-..x
-====
-Third turn (x wins):
-xo.
-.xo
-..x
-====
-\end{lstlisting}
+	By inspecting the code it was determined that the grid is represented by a numpy array of 9 elements, one for each space on the board; 0 represents an empty space, 1 represents the presence of an x in the space, and 2 represents the presence of an o in the space. The parameter \texttt{turn} represents whose turn it is, taking on values of 1 or 2 (for x and o respectively). The parameter \texttt{done} is a Boolean value denoting whether or not the game is finished.
 	
+	A game of Tic-Tac-Toe (albeit an amateur one) was simulated using the code seen in \cref{lst:1}. Its text output is seen below it.
+	\begin{listing}
+		\caption{Simulated game of Tic-Tac-Toe.}
+		\label{lst:1}
+		\begin{minted}[mathescape, linenos, numbersep=5pt, gobble=3, frame=lines, framesep=2mm, tabsize=4, breaklines]{python}
+			p1_env=Environment()
+			print('First turns:')
+			p1_env.step(0)
+			p1_env.step(1)
+			p1_env.render()
+			print('Second turns:')
+			p1_env.step(8)
+			p1_env.step(5)
+			p1_env.render()
+			print('Third turn (x wins):')
+			p1_env.step(4)
+			p1_env.render()
+		\end{minted}
+		\begin{verbatim}
+			First turns:
+			xo.
+			...
+			...
+			====
+			Second turns:
+			xo.
+			..o
+			..x
+			====
+			Third turn (x wins):
+			xo.
+			.xo
+			..x
+			====
+		\end{verbatim}
+	\end{listing}	
 	
 \end{problem}
 \clearpage
@@ -184,41 +187,61 @@ xo.
 \FloatBarrier
 \begin{problem}
 	
-	\begin{subproblem}
+\begin{subproblem}
+	The completed policy class is shown in \cref{lst:2a}.
+	\begin{listing}
+		\caption{Completed Policy class.}
+		\label{lst:2a}
+		\begin{minted}[mathescape, linenos, numbersep=5pt, gobble=3, frame=lines, framesep=2mm, tabsize=4, breaklines]{python}
+			class Policy(nn.Module):		
+				def __init__(self, input_size=27, hidden_size=64, output_size=9):
+				super(Policy, self).__init__()
+				self.policy = nn.Sequential(
+					nn.Linear(input_size, hidden_size),
+					nn.ReLU(),
+					nn.Linear(hidden_size, output_size),
+					nn.Softmax(1)
+				)
+				def forward(self, x):
+					return self.policy.forward(x)
+		\end{minted}
+	\end{listing}
+\end{subproblem}
+	
+\begin{subproblem}
+	By inspecting the code in the \texttt{select\_action} function, it was determined that the 27-dimensional array is used to one-hot encode the state of the board. In other words, three rows are used to represent the locations of an empty, x, or o element respectively. \Cref{lst:2b} shows a numpy \texttt{grid} array and its corresponding \texttt{torch.FloatTensor}.
+
+	\begin{listing}
+		\caption{Representation of the 27-dimensional array.}
+		\label{lst:2b}
+		\begin{minted}[mathescape, linenos, numbersep=5pt, gobble=3, frame=lines, framesep=2mm, tabsize=4, breaklines]{python}
+			import tictactoe  
+			
+			state=np.array([0,1,2]*3)
+			print('The grid array format is:')
+			print(state)
+			state = torch.from_numpy(state).long().unsqueeze(0)
+			state = torch.zeros(3,9).scatter_(0,state,1)
+			print('\nThe 27-dimensional array format is:')
+			print(state)
+		\end{minted}
+		\begin{verbatim}
+		The grid array format is:
+		[0 1 2 0 1 2 0 1 2]
 		
-	\end{subproblem}
+		The 27-dimensional array format is:
+		
+		1     0     0     1     0     0     1     0     0
+		0     1     0     0     1     0     0     1     0
+		0     0     1     0     0     1     0     0     1
+		[torch.FloatTensor of size 3x9]
+		\end{verbatim}
+	\end{listing}
+\end{subproblem}
 	
-	\begin{subproblem}
-By inspecting the code in the \textit{select\_action} function, it was determined that the 27-dimensional array is used to one-hot encode the state of the board. In other words, three rows are used to represent the locations of an empty, x, or o element respectively. Listing \ref{2b} shows a numpy \textit{grid} array and its corresponding \textit{torch.FloatTensor}.
-
-\begin{lstlisting}[language=Python, caption=Representation of the 27-dimensional array, label=2b] 
-import tictactoe  
-
-state=np.array([0,1,2]*3)
-print('The grid array format is:')
-print(state)
-state = torch.from_numpy(state).long().unsqueeze(0)
-state = torch.zeros(3,9).scatter_(0,state,1)
-print('\nThe 27-dimensional array format is:')
-print(state)
-
-...
-
-The grid array format is:
-[0 1 2 0 1 2 0 1 2]
-
-The 27-dimensional array format is:
-
-    1     0     0     1     0     0     1     0     0
-    0     1     0     0     1     0     0     1     0
-    0     0     1     0     0     1     0     0     1
-[torch.FloatTensor of size 3x9]
-\end{lstlisting}
-	\end{subproblem}
-	
-	\begin{subproblem}
-The output of this policy is a 9-dimensional vector, in the same format as \textit{grid} described in Part 1, with each value representing the probability of that spot being chosen this turn. In other words, it represents a discrete probability distribution. Since \textit{select\_action} takes a sample from this distribution, and does not always choose the element of highest probability, the policy is therefore stochastic.
-	\end{subproblem}
+\begin{subproblem}
+	The output of this policy is a 9-dimensional vector, in the same format as \texttt{grid} described in Part 1, with each value representing the probability of that spot being chosen this turn. In other words, it represents a discrete probability distribution. Since \texttt{select\_action} takes a sample from this distribution, and does not always choose the element of highest probability, the policy is therefore stochastic.
+\end{subproblem}
 	
 \end{problem}
 \clearpage
@@ -228,9 +251,17 @@ The output of this policy is a 9-dimensional vector, in the same format as \text
 %----------------------------------------------------------------------------------------
 \FloatBarrier
 \begin{problem}
-	
 	\begin{subproblem}
-		
+		The completed \texttt{compute\_returns} function is shown in \cref{lst:3a}.
+		\begin{listing}
+			\caption{Reward Values.}
+			\label{lst:3a}
+			\begin{minted}[mathescape, linenos, numbersep=5pt, gobble=4, frame=lines, framesep=2mm, tabsize=4, breaklines]{python}
+				def compute_returns(rewards, gamma=1.0):
+					v = list(accumulate([r * gamma ** i for i, r in enumerate(rewards)][::-1]))
+					return [r / gamma ** i for i, r in enumerate(v[::-1])]
+			\end{minted}
+		\end{listing}
 	\end{subproblem}
 	
 	\begin{subproblem}
@@ -246,26 +277,32 @@ The output of this policy is a 9-dimensional vector, in the same format as \text
 \FloatBarrier
 \begin{problem}
 	
-	\begin{subproblem}
-The modified \textit{get\_rewards} function is seen in Listing \ref{reward values}.
-\begin{lstlisting}[language=Python, caption=Reward values, label=reward values] 
-def get_reward(status):
-    """Returns a numeric given an environment status."""
-    return {
-            Environment.STATUS_VALID_MOVE  : 0,
-            Environment.STATUS_INVALID_MOVE: -0.5,
-            Environment.STATUS_WIN         : 1,
-            Environment.STATUS_TIE         : 0,
-            Environment.STATUS_LOSE        : -1
-    }[status]
-\end{lstlisting}
-	\end{subproblem}
+\begin{subproblem}
+	The modified \texttt{get\_rewards} function is seen in \cref{lst:4a}
+	\begin{listing}
+		\caption{Reward Values.}
+		\label{lst:4a}
+		\begin{minted}[mathescape, linenos, numbersep=5pt, gobble=3, frame=lines, framesep=2mm, tabsize=4, breaklines]{python}
+			def get_reward(status):
+				"""Returns a numeric given an environment status."""
+				return {
+					Environment.STATUS_VALID_MOVE  : 0,
+					Environment.STATUS_INVALID_MOVE: -0.5,
+					Environment.STATUS_WIN         : 1,
+					Environment.STATUS_TIE         : 0,
+					Environment.STATUS_LOSE        : -1
+				}[status]
+		\end{minted}
+	\end{listing}
+\end{subproblem}
 
-	\begin{subproblem}
-It was decided that the only positive reward should be winning a game. It yields a reward of 1. The justification for this decision is that ultimately the algorithm is attempting to win games, and thus is rewarded for doing so.\\\\
-Making a valid move and tying a game yield rewards of 0. Since these actions do not explicitly work towards winning games, but also are not unfavourable, no reward is associated with them.\\\\
-Invalid moves and losing a game are assigned reward values of -0.5 and -1 respectively. Making an invalid move is unwanted since it effectively skips the player's turn. An efficient algorithm should not make invalid moves. Losing a game is clearly unwanted, and thus its reward is the most negative of all actions.		
-	\end{subproblem}
+\begin{subproblem}
+	It was decided that the only positive reward should be winning a game. It yields a reward of 1. The justification for this decision is that ultimately the algorithm is attempting to win games, and thus is rewarded for doing so.
+	
+	Making a valid move and tying a game yield rewards of 0. Since these actions do not explicitly work towards winning games, but also are not unfavourable, no reward is associated with them.
+	
+	Invalid moves and losing a game are assigned reward values of \num{-0.5} and \num{-1} respectively. Making an invalid move is unwanted since it effectively skips the player's turn. An efficient algorithm should not make invalid moves. Losing a game is clearly unwanted, and thus its reward is the most negative of all actions.		
+\end{subproblem}
 	
 \end{problem}
 \clearpage
@@ -275,22 +312,155 @@ Invalid moves and losing a game are assigned reward values of -0.5 and -1 respec
 %----------------------------------------------------------------------------------------
 \FloatBarrier
 \begin{problem}
+\begin{subproblem}
+	The training curve obtained during training is shown in \cref{fig:5a}. Beyond the choice of the number of hidden units and tweaking the returns from Part 4, no additional hyperparameters were tuned. The original choice for returns did not place enough penalty on invalid moves, leading to suboptimal performance.
+	\begin{figure}
+		\includegraphics[width=\linewidth]{training_curve}
+		\caption{Average return versus episodes elapsed during training of policy.}
+		\label{fig:5a}
+	\end{figure}
+\end{subproblem}
+
+\begin{subproblem}
+	The policy was trained with 32, 64, and 128 hyperparameters with the final trained policies compared via their win rates against a random opponent. Each choice was trained several times to reduce the impact of random chance on the final performance. The results obtained are shown in \cref{tab:5b}. 
 	
-	\begin{subproblem}
-		
-	\end{subproblem}
+	Across the different trials, there seems to be a very large margin in the obtained results, greater than the difference between the choice of different hidden layer sizes. However, a policy based around a hidden layer size of 32 seems to consistently provide the best performance and so was chosen for further experimentation.
+	\begin{table}
+		\caption{Win rate across several trails for a policy models with 32, 64, or 128 hidden units.}
+		\label{tab:5b}
+		\centering
+		\begin{tabular}{c S S S}
+			Trial & {32 Hidden Units} & {64 Hidden Units} & {128 Hidden Units} \\
+			\hline
+			1 & 0.814 & 0.782 & 0.837 \\
+			2 & 0.862 & 0.866 & 0.722 \\
+			3 & 0.867 & 0.871 & 0.756 \\
+			4 & 0.821 & 0.674 & 0.767 \\
+			5 & 0.804 & 0.745 & 0.743 \\
+			\hline
+		\end{tabular}
+	\end{table}
+\end{subproblem}
 	
-	\begin{subproblem}
-		
-	\end{subproblem}
+\begin{subproblem}
+	To determine the approximate episode when the model learned to stop playing invalid moves, the average number of invalid moves made as the training progressed was plotted. This is shown in \cref{fig:5c}. 
+	\begin{figure}
+		\includegraphics[width=\linewidth]{invalid_moves}
+		\caption{Average number of invalid moves across one hundred games versus number of episodes elapsed during training.}
+		\label{fig:5c}
+	\end{figure}
+\end{subproblem}
 	
-	\begin{subproblem}
-		
-	\end{subproblem}
+\begin{subproblem}
+	Across one hundred games, the model managed to win 81, lose 14, and tie 5. Five games are shown in \cref{lst:5d}. 
 	
-	\begin{subproblem}
-		
-	\end{subproblem}
+	The most noticeable strategy exhibited by the policy is to prioritize the diagonal, with diagonals being the source of the majority of its victories. Another may be prioritizing the centre as the games usually end with the centre filled by x. Both these may be the result of an attempt to control as large a territory as possible to limit the ability of the opponent to win. 
+	\begin{listing}
+		\caption{Five example games from fully trained policy.}
+		\label{lst:5d}
+		\centering
+		\begin{minipage}[t]{0.1\linewidth}
+			\begin{verbatim}
+				..x
+				o..
+				...
+				====
+				..x
+				ox.
+				.o.
+				====
+				..x
+				ox.
+				xo.
+				====
+			\end{verbatim}
+		\end{minipage}%
+		\begin{minipage}[t]{0.1\linewidth}
+			\begin{verbatim}
+				.o.
+				...
+				..x
+				====
+				.ox
+				...
+				o.x
+				====
+				xox
+				o..
+				o.x
+				====
+				xox
+				ox.
+				o.x
+				====
+			\end{verbatim}
+		\end{minipage}%
+		\begin{minipage}[t]{0.1\linewidth}
+			\begin{verbatim}
+				..o
+				.x.
+				...
+				====
+				..o
+				ox.
+				..x
+				====
+				..o
+				oxo
+				x.x
+				====
+				x.o
+				oxo
+				x.x
+				====
+			\end{verbatim}
+		\end{minipage}%
+		\begin{minipage}[t]{0.1\linewidth}
+			\begin{verbatim}
+				o..
+				...
+				..x
+				====
+				o.x
+				..o
+				..x
+				====
+				o.x
+				.xo
+				o.x
+				====
+				oox
+				.xo
+				oxx
+				====
+				oox
+				xxo
+				oxx
+				====
+			\end{verbatim}
+		\end{minipage}%
+		\begin{minipage}[t]{0.1\linewidth}
+			\begin{verbatim}
+				..x
+				...
+				o..
+				====
+				.ox
+				.x.
+				o..
+				====
+				xox
+				.x.
+				oo.
+				====
+				xox
+				.x.
+				oox
+				====
+			\end{verbatim}
+		\end{minipage}%
+	\end{listing}
+\end{subproblem}
 	
 \end{problem}
 \clearpage
