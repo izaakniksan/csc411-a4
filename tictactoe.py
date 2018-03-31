@@ -240,7 +240,11 @@ if __name__ == '__main__':
     print('Running part2b.py...')
     part2b.main()
     print('...part2b.py finished\n')
-    
+    print('Part 5 skipped. Please open and run part5.py separately.')
+    import part6
+    print('Running part6.py...')
+    part6.main()
+    print('...part6.py finished\n')
     import sys
 
     policy = Policy()

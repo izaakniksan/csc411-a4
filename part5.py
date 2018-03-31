@@ -66,7 +66,7 @@ def invalid_moves(policy, env, n_games=100):
 
 
 def main():
-    print('Enter Part')
+    print('Enter Part (a, b, c, or d):')
     part = input()
 
     if part == 'a':
@@ -94,6 +94,7 @@ def main():
         plt.show()
 
     if part == 'd':
+        test_hidden_size(32)
         env = Environment()
         policy = Policy(hidden_size=32)
         policy.load_state_dict(torch.load('ttt/policy-50000.pkl'))
