@@ -265,7 +265,7 @@
 	\end{subproblem}
 	
 	\begin{subproblem}
-
+The reason why a backward pass cannot be computed before the entire episode is completed is because the \textit{compute\_returns} function requires actions for all values of t in order for it to compute the total return. Thus, computing it midway through would not be possible as the reward would depend on actions in the future. Furthermore, even if one were to restructure the code to allow for computing the rewards before the end of an episode, the problem of improperly-scaled rewards may also arise. In other words, more recent actions should be weighed more strongly than older ones by an exponentiated gamma factor; changing the model to be rewarded midway through leads to a situtation where it is not immediately clear how to properly account for a time-dependent reward system. Finally, by the very nature of the way this algorithm was constructed, computing a backward pass midway is not advisable since during an actual play-through no further training will be done. The model at testing time is to remain static.
 	\end{subproblem}
 	
 \end{problem}
