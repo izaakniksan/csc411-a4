@@ -1,10 +1,10 @@
-1: I
+1: I    done
 2: a: L
-	b,c: I
+	b,c: I   done
 
 3. a: L
-	b: I
+	b: I	done
 
-4. I
+4. I	done
 5. L
 6,7,8. I

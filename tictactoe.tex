@@ -138,9 +138,10 @@
 %----------------------------------------------------------------------------------------
 \FloatBarrier
 \begin{problem}
-By inspecting the code it was determined that the grid is represented by a numpy array of 9 elements, one for each space on the board. The parameter \textit{turn} represents whose turn it is, taking on values of 1 or 2 (for x and o respectively). The parameter \textit{done} is a Boolean value denoting whether or not the game is finished.\\\\
-A game of Tic-Tac-Toe (albeit an amateur one) was simulated using the code seen in Listing 1. Its text output is seen below it.
-\begin{lstlisting}[language=Python, caption=Simulated game of Tic-Tac-Toe]
+By inspecting the code it was determined that the grid is represented by a numpy array of 9 elements, one for each space on the board; 0 represents an empty space, 1 represents the presence of an x in the space, and 2 represents the presence of an o in the space. The parameter \textit{turn} represents whose turn it is, taking on values of 1 or 2 (for x and o respectively). The parameter \textit{done} is a Boolean value denoting whether or not the game is finished.\\\\
+A game of Tic-Tac-Toe (albeit an amateur one) was simulated using the code seen in Listing \ref{simulated game}. Its text output is seen below it.
+
+\begin{lstlisting}[language=Python, caption=Simulated game of Tic-Tac-Toe, label=simulated game] 
 p1_env=Environment()
 print('First turns:')
 p1_env.step(0)
@@ -188,12 +189,31 @@ xo.
 	\end{subproblem}
 	
 	\begin{subproblem}
-By inspecting the 27-dimensional vector
+By inspecting the code in the \textit{select\_action} function, it was determined that the 27-dimensional array is used to one-hot encode the state of the board. In other words, three rows are used to represent the locations of an empty, x, or o element respectively. Listing \ref{2b} shows a numpy \textit{grid} array and its corresponding \textit{torch.FloatTensor}.
 
+\begin{lstlisting}[language=Python, caption=Representation of the 27-dimensional array, label=2b] 
+import tictactoe  
 
-\\\\\\\\\\\\\\\\\\\
+state=np.array([0,1,2]*3)
+print('The grid array format is:')
+print(state)
+state = torch.from_numpy(state).long().unsqueeze(0)
+state = torch.zeros(3,9).scatter_(0,state,1)
+print('\nThe 27-dimensional array format is:')
+print(state)
 
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+...
+
+The grid array format is:
+[0 1 2 0 1 2 0 1 2]
+
+The 27-dimensional array format is:
+
+    1     0     0     1     0     0     1     0     0
+    0     1     0     0     1     0     0     1     0
+    0     0     1     0     0     1     0     0     1
+[torch.FloatTensor of size 3x9]
+\end{lstlisting}
 	\end{subproblem}
 	
 	\begin{subproblem}
@@ -214,7 +234,7 @@ The output of this policy is a 9-dimensional vector, in the same format as \text
 	\end{subproblem}
 	
 	\begin{subproblem}
-		
+
 	\end{subproblem}
 	
 \end{problem}
@@ -227,11 +247,24 @@ The output of this policy is a 9-dimensional vector, in the same format as \text
 \begin{problem}
 	
 	\begin{subproblem}
-		
+The modified \textit{get\_rewards} function is seen in Listing \ref{reward values}.
+\begin{lstlisting}[language=Python, caption=Reward values, label=reward values] 
+def get_reward(status):
+    """Returns a numeric given an environment status."""
+    return {
+            Environment.STATUS_VALID_MOVE  : 0,
+            Environment.STATUS_INVALID_MOVE: -0.5,
+            Environment.STATUS_WIN         : 1,
+            Environment.STATUS_TIE         : 0,
+            Environment.STATUS_LOSE        : -1
+    }[status]
+\end{lstlisting}
 	\end{subproblem}
-	
+
 	\begin{subproblem}
-		
+It was decided that the only positive reward should be winning a game. It yields a reward of 1. The justification for this decision is that ultimately the algorithm is attempting to win games, and thus is rewarded for doing so.\\\\
+Making a valid move and tying a game yield rewards of 0. Since these actions do not explicitly work towards winning games, but also are not unfavourable, no reward is associated with them.\\\\
+Invalid moves and losing a game are assigned reward values of -0.5 and -1 respectively. Making an invalid move is unwanted since it effectively skips the player's turn. An efficient algorithm should not make invalid moves. Losing a game is clearly unwanted, and thus its reward is the most negative of all actions.		
 	\end{subproblem}
 	
 \end{problem}
