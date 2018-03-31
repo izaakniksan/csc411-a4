@@ -1,9 +1,15 @@
-import tictactoe  
+import tictactoe 
+import numpy as np
+import torch
 
-state=np.array([0,1,2]*3)
-print('The grid array format is:')
-print(state)
-state = torch.from_numpy(state).long().unsqueeze(0)
-state = torch.zeros(3,9).scatter_(0,state,1)
-print('\nThe 27-dimensional array format is:')
-print(state)
+def main():
+    state=np.array([0,1,2]*3)
+    print('The grid array format is:')
+    print(state)
+    state = torch.from_numpy(state).long().unsqueeze(0)
+    state = torch.zeros(3,9).scatter_(0,state,1)
+    print('\nThe 27-dimensional array format is:')
+    print(state)
+
+if __name__ == '__main__':
+    main()

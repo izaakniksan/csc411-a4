@@ -156,11 +156,11 @@ def finish_episode(saved_rewards, saved_logprobs, gamma=1.0):
 def get_reward(status):
     """Returns a numeric given an environment status."""
     return {
-            Environment.STATUS_VALID_MOVE  : 0, # TODO
-            Environment.STATUS_INVALID_MOVE: 0,
-            Environment.STATUS_WIN         : 0,
+            Environment.STATUS_VALID_MOVE  : 0,
+            Environment.STATUS_INVALID_MOVE: -0.5,
+            Environment.STATUS_WIN         : 1,
             Environment.STATUS_TIE         : 0,
-            Environment.STATUS_LOSE        : 0
+            Environment.STATUS_LOSE        : -1
     }[status]
 
 def train(policy, env, gamma=1.0, log_interval=1000):
@@ -224,7 +224,10 @@ if __name__ == '__main__':
     print('Running part1.py...')
     part1.main()
     print('...part1.py finished\n')
-    
+    import part2b
+    print('Running part2b.py...')
+    part2b.main()
+    print('...part2b.py finished\n')
     import sys
     policy = Policy()
     env = Environment()
