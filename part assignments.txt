@@ -3,8 +3,8 @@
 	b,c: I   done
 
 3. a: L
-	b: I
+	b: I	done
 
-4. I
+4. I	done
 5. L
 6,7,8. I
