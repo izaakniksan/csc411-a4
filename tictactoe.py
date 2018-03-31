@@ -232,6 +232,15 @@ def load_weights(policy, episode):
 
 
 if __name__ == '__main__':
+    import part1
+    print('Running part1.py...')
+    part1.main()
+    print('...part1.py finished\n')
+    import part2b
+    print('Running part2b.py...')
+    part2b.main()
+    print('...part2b.py finished\n')
+    
     import sys
 
     policy = Policy()
