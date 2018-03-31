@@ -1,6 +1,6 @@
-1: I
+1: I    done
 2: a: L
-	b,c: I
+	b,c: I   done
 
 3. a: L
 	b: I
