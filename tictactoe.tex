@@ -287,7 +287,7 @@ The reason why a backward pass cannot be computed before the entire episode is c
 				"""Returns a numeric given an environment status."""
 				return {
 					Environment.STATUS_VALID_MOVE  : 0,
-					Environment.STATUS_INVALID_MOVE: -0.5,
+					Environment.STATUS_INVALID_MOVE: -1,
 					Environment.STATUS_WIN         : 1,
 					Environment.STATUS_TIE         : 0,
 					Environment.STATUS_LOSE        : -1
@@ -301,7 +301,7 @@ The reason why a backward pass cannot be computed before the entire episode is c
 	
 	Making a valid move and tying a game yield rewards of 0. Since these actions do not explicitly work towards winning games, but also are not unfavourable, no reward is associated with them.
 	
-	Invalid moves and losing a game are assigned reward values of \num{-0.5} and \num{-1} respectively. Making an invalid move is unwanted since it effectively skips the player's turn. An efficient algorithm should not make invalid moves. Losing a game is clearly unwanted, and thus its reward is the most negative of all actions.		
+	Invalid moves and losing a game are both assigned reward values of \num{-1}. Making an invalid move is unwanted since it effectively skips the player's turn; an efficient algorithm should not make invalid moves. Losing a game is also clearly unwanted. It is noted that originally an invalid move was assigned a reward of -0.5; however, after some experimentation was done it was determined that the fully-trained model continued to make such moves. This behavious was eliminated by changing the reward to -1.		
 \end{subproblem}
 	
 \end{problem}
@@ -470,8 +470,14 @@ The reason why a backward pass cannot be computed before the entire episode is c
 %----------------------------------------------------------------------------------------
 \FloatBarrier
 \begin{problem}
-	
-	
+    In \cref{fig:p6} the win, loss, and tie ratios over the duration of the training are shown. The data was gathered by playing 100 games at each saved episode checkpoint. The random nature of the opponent being played against is visible here, evident by the performance fluctuation across games. Until around 15 000 episodes, the win ratio clearly increased and the loss ratio clearly decreased, while the tie ratio stayed constant. Until around 35 000 episodes, all ratios remain relatively unchanged; however, at this point a clear divergence of the tie and loss ratios is evident, with the former decreasing and the latter increasing.
+
+    \begin{figure}
+    \includegraphics[width=\linewidth]{part6.png}
+    \caption{Win, loss, and tie ratios over 100 games at different episodes during training}
+    \label{fig:p6}
+    \end{figure}
+    	
 \end{problem}
 \clearpage
 
@@ -480,7 +486,25 @@ The reason why a backward pass cannot be computed before the entire episode is c
 %----------------------------------------------------------------------------------------
 \FloatBarrier
 \begin{problem}
-	
+ In \cref{fig:final_firstmove_dist} the first move distribution of the fully-trained model is shown. The top right corner (element 2 in the flattened array) is by far the most likely first move with a probability of 97.5\%. The second largest probability is the top left corner (element 0) with a probability of 2.3\%. The other elements have probabilities under 1\%.
+ 
+ It is widely accepted that the optimal first move in tic-tac-toe should be in a corner, and thus it makes sense that the model chose a corner to be its first move. The choice of corner, however, is arbitrary due to the symmetry of the game.
+ 
+ Next, the evolution of the first move distribution throughout training was plotted in \cref{fig:changing_firstmove_dist}. Towards the start of the training all spaces had nearly equal probabilities; as training progressed, however, there was a sharp divergence. Throughout the majority of episodes space 0 (top left corner) and space 2 (top right corner) alternated being the most likely first moves. Once again, this is consistent with the universally-accepted strategy for this game.
+
+    \begin{figure}
+    \begin{center}
+    \includegraphics[]{final_firstmove_dist}
+    \caption{First move distribution of the fully-trained model}
+    \label{fig:final_firstmove_dist}
+    \end{center}
+    \end{figure}
+    
+    \begin{figure}
+    \includegraphics[width=\linewidth]{changing_firstmove_dist.png}
+    \caption{First move distributions throughout training; enumeration of spaces begins at the top left corner and ends at the bottom right corner}
+    \label{fig:changing_firstmove_dist}
+    \end{figure}
 	
 \end{problem}
 \clearpage

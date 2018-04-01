@@ -97,7 +97,7 @@ def main():
         test_hidden_size(32)
         env = Environment()
         policy = Policy(hidden_size=32)
-        policy.load_state_dict(torch.load('ttt/policy-50000.pkl'))
+        policy.load_state_dict(torch.load('ttt\policy-50000.pkl'))
         examine_performance(policy, env)
 
 

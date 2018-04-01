@@ -240,16 +240,21 @@ if __name__ == '__main__':
     print('Running part2b.py...')
     part2b.main()
     print('...part2b.py finished\n')
-    print('Part 5 skipped. Please open and run part5.py separately.')
+    print('Part 5 skipped. Please open and run part5.py separately.\n')
     import part6
     print('Running part6.py...')
     part6.main()
     print('...part6.py finished\n')
+    import part7
+    print('Running part7.py...')
+    part7.main()
+    print('...part7.py finished\n')
     import sys
 
     policy = Policy()
     env = Environment()
 
+'''
     if len(sys.argv) == 1:
         # `python tictactoe.py` to train the agent
         train(policy, env)
@@ -259,3 +264,4 @@ if __name__ == '__main__':
         ep = int(sys.argv[1])
         load_weights(policy, ep)
         print(first_move_distr(policy, env))
+'''

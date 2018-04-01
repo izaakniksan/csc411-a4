@@ -6,5 +6,6 @@
 	b: I	done
 
 4. I	done
-5. L
-6,7,8. I
+5. L done
+6,7 I  done
+8. I
