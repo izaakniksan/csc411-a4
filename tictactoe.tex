@@ -514,8 +514,7 @@ The reason why a backward pass cannot be computed before the entire episode is c
 %----------------------------------------------------------------------------------------
 \FloatBarrier
 \begin{problem}
-	
-	
+While the trained policy won the majority of its games against a random policy, it did seem to occasionally make certain mistakes that a human would have easily avoided. \Cref{lst:5d} shows several games that were played, wherein it is observable that in certain cases the algorithm failed to make a winning move when it had the opportunity to do so. For example, in the second game displayed, it did not complete the line during for its second move, and as a result the game ended in a tie. The same problem arose in the third game. It is noted that, as previously explained, the algorithm seemed to prioritize the diagonal line. As a result, it is hypothesized that these two misplays seen in \ref{lst:5d} arose since the winning move was not along the diagonal but rather along a row on the side.
 \end{problem}
 \clearpage
 
