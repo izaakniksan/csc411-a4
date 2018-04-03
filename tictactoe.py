@@ -240,7 +240,8 @@ if __name__ == '__main__':
     print('Running part2b.py...')
     part2b.main()
     print('...part2b.py finished\n')
-    print('Part 5 skipped. Please open and run part5.py separately.\n')
+    print('Part 5 skipped. Please open and run part5.py separately, being \
+sure to enter a, b, c, or d.\n')
     import part6
     print('Running part6.py...')
     part6.main()
