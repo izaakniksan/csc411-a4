@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 
 from tictactoe import *
 
+
 def win_lose_tie_ratios(policy, env, n_games=100, opponent=2):
     '''
     Evaluate and return the win, lose, and tie rates for a given policy.
@@ -18,7 +19,8 @@ def win_lose_tie_ratios(policy, env, n_games=100, opponent=2):
         wins += status == Environment.STATUS_WIN
         losses += status == Environment.STATUS_LOSE
         ties += status == Environment.STATUS_TIE
-    return wins/n_games, losses/n_games, ties/n_games
+    return wins / n_games, losses / n_games, ties / n_games
+
 
 def train(policy, env, gamma=1.0, log_interval=1000):
     """Train policy gradient."""
@@ -33,7 +35,7 @@ def train(policy, env, gamma=1.0, log_interval=1000):
         saved_logprobs = []
         state = env.reset()
         done = False
-        opponent_turn = int(np.random.random() > 0.5)
+        opponent_turn = int(np.random.random() > 0.5) + 1
         if opponent_turn == 1:
             state, status, done = env.random_step()
         while not done:
@@ -66,20 +68,6 @@ def train(policy, env, gamma=1.0, log_interval=1000):
     return avg_rewards
 
 
-def win_rate(policy, env, n_games=100000):
-    wins = 0
-    for i in range(n_games):
-        state = env.reset()
-        done = False
-        if i % 2 == 0:
-            state, status, done = env.random_step()
-        while not done:
-            action, logprob = select_action(policy, state)
-            state, status, done = env.play_against_random(action)
-        wins += status == Environment.STATUS_WIN
-    return wins / n_games
-
-
 def plot_wins(opponent):
     env = Environment()
     policy = Policy(hidden_size=32)
@@ -88,12 +76,12 @@ def plot_wins(opponent):
     lose_ratio = []
     tie_ratio = []
     import glob
-    for file in glob.glob('ttt/*'):
+    for file in glob.glob('ttt2/*'):
         policy.load_state_dict(torch.load(file))
         # get the ratios:
         wins, losses, ties = win_lose_tie_ratios(policy, env, opponent=opponent)
 
-        episodes.append(int(file[11:-4]))
+        episodes.append(int(file[12:-4]))
 
         win_ratio.append(wins)
         lose_ratio.append(losses)
@@ -109,17 +97,19 @@ def plot_wins(opponent):
 
 
 def main():
+    part = input()
     env = Environment()
     policy = Policy(hidden_size=32)
-    avg_return = train(policy, env)
-    plt.plot((np.arange(len(avg_return)) + 1) * 1000, avg_return)
-    plt.xlabel('Episodes')
-    plt.ylabel('Average Return')
-    plt.show()
-    plot_wins(1)
-    plot_wins(2)
-
-
+    if part == 'a':
+        avg_return = train(policy, env)
+        plt.plot((np.arange(len(avg_return)) + 1) * 1000, avg_return)
+        plt.xlabel('Episodes')
+        plt.ylabel('Average Return')
+        plt.show()
+        plot_wins(1)
+        plot_wins(2)
+    if part == 'b':
+        policy.load_state_dict(torch.load('ttt'))
 
 
 if __name__ == '__main__':
