@@ -1,5 +1,5 @@
 import random
-from itertools import count, accumulate
+from itertools import accumulate
 
 import numpy as np
 import torch
@@ -82,10 +82,10 @@ class Environment(object):
         move = random.choice(pos)
         return self.step(move)
 
-    def play_against_random(self, action):
+    def play_against_random(self, action, opponent=2):
         """Play a move, and then have a random agent play the next move."""
         state, status, done = self.step(action)
-        if not done and self.turn == 2:
+        if not done and self.turn == opponent:
             state, s2, done = self.random_step()
             if done:
                 if s2 == self.STATUS_WIN:
@@ -233,24 +233,27 @@ def load_weights(policy, episode):
 
 if __name__ == '__main__':
     import part1
+
     print('Running part1.py...')
     part1.main()
     print('...part1.py finished\n')
     import part2b
+
     print('Running part2b.py...')
     part2b.main()
     print('...part2b.py finished\n')
     print('Part 5 skipped. Please open and run part5.py separately, being \
 sure to enter a, b, c, or d.\n')
     import part6
+
     print('Running part6.py...')
     part6.main()
     print('...part6.py finished\n')
     import part7
+
     print('Running part7.py...')
     part7.main()
     print('...part7.py finished\n')
-    import sys
 
     policy = Policy()
     env = Environment()
