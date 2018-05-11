@@ -172,6 +172,7 @@ def examine_performance(policy, env, n_shown=5, rand=True):
 
 
 def main():
+    print('enter part:')
     part = input()
     env = Environment()
     policy = Policy(hidden_size=32)
@@ -187,14 +188,15 @@ def main():
         examine_performance(policy, env)
     if part == 'b':
         policy.load_state_dict(torch.load('ttt2/policy-50000.pkl'))
+        examine_performance(policy, env, n_shown=5, rand=True)
         avg_return = self_train(policy, env)
+        examine_performance(policy, env, n_shown=5, rand=True)
         plt.plot((np.arange(len(avg_return)) + 1) * 1000, avg_return)
         plt.xlabel('Episodes')
         plt.ylabel('Average Return')
         plt.show()
         plot_wins(1, 'ttt3')
         plot_wins(2, 'ttt3')
-
 
 if __name__ == '__main__':
     main()
